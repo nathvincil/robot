@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Car Control</title>
+
+  <!-- Always include these -->
+  <script src="automode.js"></script>
+  <script src="code.js" defer></script>
+
+  <style>
+    body {
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      height:100vh; background:linear-gradient(to right,#000428,#004e92);
+      color:white; font-family:Arial,sans-serif; margin:0;
+    }
+    .controls{
+      display:grid;
+      grid-template:repeat(3,80px)/repeat(3,80px);
+      gap:10px; margin:20px;
+    }
+    .button{
+      width:80px;height:80px;font-size:18px;
+      background:#ff5733;border:none;color:white;border-radius:10px;
+      cursor:pointer;transition:.3s;
+    }
+    .button:hover{background:#c70039;}
+    .forward{grid-area:1/2}
+    .left{grid-area:2/1}
+    .stop{grid-area:2/2}
+    .right{grid-area:2/3}
+    .backward{grid-area:3/2}
+
+    @keyframes blink{0%,100%{opacity:.4}50%{opacity:1}}
+    .blink-btn{
+      margin:1rem;padding:.8rem 1.5rem;font-size:1.2rem;
+      background:#ff5733;border:none;color:white;border-radius:5px;
+      cursor:pointer;transition:.2s;
+    }
+    .blink-btn.active{
+      background:yellow;color:black;
+      animation:blink 1s infinite;
+    }
+
+    #brake{
+      width:2rem;height:2rem;background:#c00;border-radius:50%;
+      opacity:.3;transition:.2s;margin-top:1rem;
+    }
+    #brake.active{opacity:1;}
+    #status{margin-top:1rem;font-size:.9rem;}
+
+    #btnAssiste.active {
+      background:limegreen;
+      color:white;
+    }
+  </style>
+</head>
+<body>
+  <h1>Car Control</h1>
+
+  <video id="video" autoplay playsinline></video>
+     
+  <div class="camera-container">
+      <img class="stream" src="" alt="Camera Feed" width="640" height="480" id="taxiVideoFeed">
+      <script>
+          document.getElementById('taxiVideoFeed').src = VIDEO_URL;
+      </script>
+  </div>
+
+
+  <!-- Movement buttons -->
+  <div class="controls">
+    <button class="button forward"  onclick="sendCmd('w')">▲</button>
+    <button class="button left"     onclick="sendCmd('l')">◄</button>
+    <button class="button stop"     onclick="sendCmd('x')">■</button>
+    <button class="button right"    onclick="sendCmd('r')">►</button>
+    <button class="button backward" onclick="sendCmd('s')">▼</button>
+  </div>
+
+  <!-- Clignotant buttons -->
+  <div>
+    <button id="btnLeft"  class="blink-btn">⯇ Gauche</button>
+    <button id="btnRight" class="blink-btn">Droite ⯈</button>
+  </div>
+
+  <!-- Assisté button -->
+  <button id="btnAssiste" class="blink-btn">Assisté</button>
+  <span id="assistStatus" style="margin-left:10px;font-weight:bold;"></span>
+
+  <!-- Brake indicator & status -->
+  <div id="brake" title="Feu de frein"></div>
+  <div id="status">WS : —</div>
+
+  <script>
+    const WS           = new WebSocket(WS_URL);
+    const status       = document.getElementById('status');
+    const btnL         = document.getElementById('btnLeft');
+    const btnR         = document.getElementById('btnRight');
+    const btnAssiste   = document.getElementById('btnAssiste');
+    const assistStatus = document.getElementById('assistStatus');
+    const brake        = document.getElementById('brake');
+
+    let leftOn = false, rightOn = false;
+    let assistedMode = false;
+
+    WS.onopen  = () => status.textContent = 'WS : connecté';
+    WS.onclose = () => status.textContent = 'WS : déconnecté';
+    WS.onerror = () => status.textContent = 'WS : erreur';
+
+    function sendCmd(c) {
+      // assisted mode: auto‑activate/cancel blinkers based on direction buttons
+      if (assistedMode) {
+        if (c === 'l' && !leftOn) {
+          leftOn = true; rightOn = false;
+          btnL.classList.add('active'); btnR.classList.remove('active');
+          sendLight('gauche');
+        }
+        else if (c === 'r' && !rightOn) {
+          rightOn = true; leftOn = false;
+          btnR.classList.add('active'); btnL.classList.remove('active');
+          sendLight('droite');
+        }
+        // when moving any other direction, cancel whichever blinker is on
+        else if (!['l','r'].includes(c) && (leftOn || rightOn)) {
+          leftOn = rightOn = false;
+          btnL.classList.remove('active'); btnR.classList.remove('active');
+          sendLight('stop');
+        }
+      } else {
+        // manual mode still auto‑cancel opposite
+        if (c === 'l' && rightOn) {
+          rightOn = false;
+          btnR.classList.remove('active');
+          sendLight('stop');
+        }
+        if (c === 'r' && leftOn) {
+          leftOn = false;
+          btnL.classList.remove('active');
+          sendLight('stop');
+        }
+      }
+      // finally send movement
+      if (WS.readyState === WebSocket.OPEN) WS.send(c);
+    }
+
+    function sendLight(cmd) {
+      if (WS.readyState === WebSocket.OPEN) {
+        WS.send(JSON.stringify({ action:'light', command:cmd }));
+      }
+    }
+
+    // Assisté toggle
+    btnAssiste.addEventListener('click', () => {
+      assistedMode = !assistedMode;
+      btnAssiste.classList.toggle('active', assistedMode);
+      assistStatus.textContent = assistedMode
+        ? "Mode assisté : ✅ ON"
+        : "Mode assisté : ❌ OFF";
+      if (WS.readyState === WebSocket.OPEN) {
+        WS.send(JSON.stringify({
+          action: 'assisted',
+          enabled: assistedMode
+        }));
+      }
+    });
+
+    // Manual blinkers
+    btnL.onclick = () => {
+      if (!leftOn) {
+        leftOn = true; rightOn = false;
+        btnL.classList.add('active'); btnR.classList.remove('active');
+        sendLight('gauche');
+      } else {
+        leftOn = false;
+        btnL.classList.remove('active');
+        sendLight('stop');
+      }
+    };
+    btnR.onclick = () => {
+      if (!rightOn) {
+        rightOn = true; leftOn = false;
+        btnR.classList.add('active'); btnL.classList.remove('active');
+        sendLight('droite');
+      } else {
+        rightOn = false;
+        btnR.classList.remove('active');
+        sendLight('stop');
+      }
+    };
+
+    // Brake indicator only
+    WS.onmessage = evt => {
+      let m;
+      try { m = JSON.parse(evt.data); }
+      catch { return; }
+      if (m.action === 'brake') brake.classList.add('active');
+      else brake.classList.remove('active');
+    };
+
+    // Keyboard movement
+    let k, t;
+    window.addEventListener('keydown', e => {
+      const map = { w:'w', s:'s', a:'l', d:'r', x:'x' };
+      if (map[e.key] && e.key !== k) {
+        clearTimeout(t);
+        sendCmd(map[e.key]);
+        k = e.key;
+        t = setTimeout(function repeat(){
+          sendCmd(map[e.key]);
+          t = setTimeout(repeat, 200);
+        }, 200);
+      }
+    });
+    window.addEventListener('keyup', e => {
+      if (e.key === k) {
+        sendCmd('x');
+        clearTimeout(t);
+        k = null;
+      }
+    });
+
+
+  </script>
+
+  <!-- Back to main -->
+  <div style="margin-top:2rem;">
+    <button onclick="location.href='index.html'"
+            class="blink-btn" style="background:#555;">
+      ⬅ Retour
+    </button>
+  </div>
+</body>
+</html>

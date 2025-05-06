@@ -1,0 +1,79 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    text-align: center;
+    color: #333;
+}
+
+.stream {
+    display: block;
+    margin: 0 auto 20px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+}
+
+.blink-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s;
+}
+
+.blink-btn:hover {
+    background-color: #0056b3;
+}
+
+.brake-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.back-btn {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.joystick-zone {
+    width: 100%;
+    height: 300px;
+    border: 2px dashed #007bff;
+    border-radius: 8px;
+    margin: 20px 0;
+    position: relative;
+}
+
+#wsStatus {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#assistStatus {
+    color: #28a745;
+}

@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1",
+    "uuid": "^11.1.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "robot",
+  "version": "1.0.0",
+  "main": "cam.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

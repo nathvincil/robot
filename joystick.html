@@ -1,0 +1,58 @@
+<!-- Project Tesla - Joystick Control Page -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joystick Control - Project Tesla</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/nipplejs@0.8.7/dist/nipplejs.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.7.4/dist/tf.min.js" defer></script>
+    <script src="automode.js" ></script>
+    <script src="code.js" defer></script>
+
+
+  </head>
+  
+<body>
+
+  <video id="video" autoplay playsinline></video>
+
+
+  <div class="container">
+
+    <img class="stream" src="" alt="Camera Feed" width="640" height="480" id="taxiVideoFeed">
+    <script>
+        document.getElementById('taxiVideoFeed').src = VIDEO_URL;
+    </script>
+
+    <h1 class="title">Joystick Control</h1>
+    <div id="wsStatus">WS: Connecting...</div>
+
+
+<div><button id="btnLeft"  class="blink-btn">⯇ Gauche</button>
+<button id="btnRight" class="blink-btn">Droite ⯈</button></div>
+
+    
+    <div id="joystick" class="joystick-zone"></div>
+
+    <button id="brake" class="brake-btn">Brake</button>
+
+    <button id="btnAssiste">Assisté</button>
+    <span id="assistStatus" style="margin-left: 10px; font-weight: bold;"></span>
+    
+    
+
+    <br>
+    <button onclick="window.location.href='index.html'" class="back-btn">Back to Main</button>
+  </div>
+
+
+
+
+
+ 
+</body>
+</html>

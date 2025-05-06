@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mode Automatique</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="automode.js" ></script>
+  
+
+
+</head>
+<body>
+    <div id="mode-auto" class="container">
+        <button class="back-button" onclick="goBack()">Retour</button>
+        <h1>Mode Automatique</h1>
+        <button onclick="selectMode('mode-vagabond')">Mode Vagabond</button>
+        <button onclick="selectMode('mode-taxi')">Mode Taxi</button>
+        <button onclick="selectMode('mode-explorateur')">Mode Explorateur</button>
+    </div>
+
+    <!-- Mode Vagabond -->
+    <div id="mode-vagabond" class="container" style="display: none;">
+        <button class="back-button" onclick="goBackToAutoMode()">Retour</button>
+        <h1>Mode Vagabond</h1>
+        <!-- Video Feed -->
+        <img class="stream" src="" alt="Camera Feed" width="640" height="480" id="taxiVideoFeed1">
+        <script>
+            document.getElementById('taxiVideoFeed1').src = VIDEO_URL;
+        </script>
+
+    
+        <div style="width: 80%; height: 500px; background: black; margin: auto;"></div>
+        <!-- 🚨 Bouton de freinage -->
+<br><br>
+<button onclick="sendCommand('x')" style="background-color: red; color: white; font-size: 20px; padding: 10px 30px; border: none; border-radius: 8px; cursor: pointer;">
+    🚨 Freinage d'urgence
+</button>
+
+    </div>
+
+    <!-- Mode Taxi -->
+    <div id="mode-taxi" class="container" style="display: none;">
+        <button class="back-button" onclick="goBackToAutoMode()">Retour</button>
+        <h1>Mode Taxi</h1>
+        <!-- Video Feed -->
+        <img class="stream" src="" alt="Camera Feed" width="640" height="480" id="taxiVideoFeed2">
+        <script>
+            document.getElementById('taxiVideoFeed2').src = VIDEO_URL;
+        </script>
+
+        <form onsubmit="envoyerTaxi(); return false;">
+            <label>Bureau de départ :</label>
+            <select id="departBureau">
+                <option value="1">Bureau 1</option>
+                <option value="2">Bureau 2</option>
+                <option value="3">Bureau 3</option>
+                <option value="4">Bureau 4</option>
+                <option value="5">Bureau 5</option>
+            </select>
+            <br><br>
+
+            <label>Rangee de départ :</label>
+            <select id="departRangee">
+                <option value="1">Rangee 1</option>
+                <option value="2">Rangee 2</option>
+                <option value="3">Rangee 3</option>
+                <option value="4">Rangee 4</option>
+            </select>
+            <br><br>
+
+            <label>Bureau de destination :</label>
+            <select id="destBureau">
+                <option value="1">Bureau 1</option>
+                <option value="2">Bureau 2</option>
+                <option value="3">Bureau 3</option>
+                <option value="4">Bureau 4</option>
+                <option value="5">Bureau 5</option>
+            </select>
+            <br><br>
+
+            <label>Rangee de destination :</label>
+            <select id="destRangee">
+                <option value="1">Rangee 1</option>
+                <option value="2">Rangee 2</option>
+                <option value="3">Rangee 3</option>
+                <option value="4">Rangee 4</option>
+            </select>
+            <br><br>
+
+            <button type="submit">Valider</button>
+        </form>
+        <!-- 🚨 Bouton de freinage -->
+<br><br>
+<button onclick="sendCommand('x')" style="background-color: red; color: white; font-size: 20px; padding: 10px 30px; border: none; border-radius: 8px; cursor: pointer;">
+    🚨 Freinage d'urgence
+</button>
+
+    </div>
+
+    <!-- Result Page for Taxi -->
+    <div id="taxi-result" class="container" style="display: none;">
+        <button class="back-button" onclick="showPage('mode-taxi')">Retour</button>
+        <h1>Navigation vers la destination</h1>
+        <!-- Video Feed -->
+        <img class="stream" src="" alt="Camera Feed" width="640" height="480" id="taxiVideoFeed3">
+        <script>
+            document.getElementById('taxiVideoFeed3').src = VIDEO_URL;
+        </script>
+
+        <!-- 🚨 Bouton de freinage -->
+<br><br>
+<button onclick="sendCommand('x')" style="background-color: red; color: white; font-size: 20px; padding: 10px 30px; border: none; border-radius: 8px; cursor: pointer;">
+    🚨 Freinage d'urgence
+</button>
+
+    </div>
+
+    <!-- Mode Explorateur -->
+    <div id="mode-explorateur" class="container" style="display: none;">
+        <button class="back-button" onclick="goBackToAutoMode()">Retour</button>
+        <h1>Mode Explorateur</h1>
+        <!-- Video Feed -->
+        <img class="stream" src="" alt="Camera Feed" width="640" height="480" id="taxiVideoFeed4">
+        <script>
+            document.getElementById('taxiVideoFeed4').src = VIDEO_URL;
+        </script>
+
+        <p>Contenu à venir...</p>
+        <!-- 🚨 Bouton de freinage -->
+<br><br>
+<button onclick="sendCommand('x')" style="background-color: red; color: white; font-size: 20px; padding: 10px 30px; border: none; border-radius: 8px; cursor: pointer;">
+    🚨 Freinage d'urgence
+</button>
+
+    </div>
+
+  
+</body>
+</html>
