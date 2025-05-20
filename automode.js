@@ -1,5 +1,5 @@
-const VIDEO_URL = "http://192.168.2.13:4747/video";
-const WS_URL = "ws://192.168.2.11:81";
+const VIDEO_URL = "http://192.168.2.19:4747/video";
+const WS_URL = "ws://192.168.1.141:81";
 
 
 var websocket = new WebSocket(WS_URL);
